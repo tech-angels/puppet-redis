@@ -14,7 +14,7 @@ define redis_source(
                  group => root
              }
              exec { redis_code: 
-                  command =>"wget http://github.com/antirez/redis/tarball/${version} -O redis_${version}.tar.gz && tar --strip-components 1 -xzvf redis_${version}.tar.gz",
+                  command =>"wget --no-check-certificate http://github.com/antirez/redis/tarball/${version} -O redis_${version}.tar.gz && tar --strip-components 1 -xzvf redis_${version}.tar.gz",
                   cwd => "${path}/redis_${version}",
                   creates => "${path}/redis_${version}/redis.c",
                   require => File["redis_folder"],
@@ -35,7 +35,8 @@ define redis_source(
         }
     }
     exec { "make ${version}":
-         command => "cd ${path}/redis_${version} && make && mv redis-server ${bin}/ && mv redis-cli ${bin}/ && mv redis-benchmark ${bin}/ && mv redis-check-dump ${bin}/",
+         command => "make && mv redis-server ${bin}/ && mv redis-cli ${bin}/ && mv redis-benchmark ${bin}/ && mv redis-check-dump ${bin}/",
+         cwd => "${path}/redis_${version}",
          creates => "${bin}/redis-server",
     }
     file { db_folder:
