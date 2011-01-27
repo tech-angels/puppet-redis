@@ -1,3 +1,31 @@
+/*
+
+Define: redis_source
+
+This resource compiles and install a Redis server
+
+Parameters:
+  $version:
+    Redis version to install.
+  $path:
+    Path where to download and compile Redis sources.
+  $bin:
+    Path where to install Redis's executables.
+  $owner:
+    Redis POSIX account.
+  $group
+    Redis POSIX group.
+
+Actions:
+ - Downloads and compiles Redis.
+ - Install binaries in $bin directory.
+
+Sample usage:
+redis_source {
+  redis:
+    version	=> 'v2.0.4-stable';
+}
+*/
 define redis_source(
     $version = 'v1.3.10',
     $path = '/usr/local/src',
