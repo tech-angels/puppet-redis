@@ -14,6 +14,7 @@ This class shouldn't be included directly. Use redis::server instead
 */
 class redis {
     user { "redis":
-        ensure => present,
+        uid	=> 800,
+        ensure => present;
     }
 }
