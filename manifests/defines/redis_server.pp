@@ -5,16 +5,14 @@ Define: redis::server
 This resource compiles and install a Redis server and ensure it is running
 
 Parameters:
-  $version:
-    Redis version to install.
-  $path:
-    Path where to download and compile Redis sources.
-  $bin:
-    Path where to install Redis's executables.
-  $owner:
-    Redis POSIX account.
-  $group
-    Redis POSIX group.
+- version: Redis version to install.
+- path: Path where to download and compile Redis sources. (optional)
+- bin: Path where to install Redis's executables. (optional)
+- owner: Redis POSIX account. (default: redis)
+- group: Redis POSIX group. (default: redis)
+- master_ip: master's IP, to make that server a slave. (optional)
+- master_port: master's port. (default 6379)
+- master_password: password to access master. (optional)
 
 Actions:
  - Downloads and compiles Redis.
@@ -28,11 +26,14 @@ redis::server {
 }
 */
 define redis::server(
-    $version,
-    $path = '/usr/local/src',
-    $bin = '/usr/local/bin',
-    $owner = 'redis',
-    $group = 'redis'
+  $version,
+  $path = '/usr/local/src',
+  $bin = '/usr/local/bin',
+  $owner = 'redis',
+  $group = 'redis',
+  $master_ip=false,
+  $master_port=6379,
+  $master_password=false
 ) {
   include redis
   redis_source {
@@ -42,6 +43,14 @@ define redis::server(
       bin	=> $bin,
       owner	=> $owner,
       group	=> $group;
+  }
+
+  # Redis configuration
+  file { 
+    "/etc/redis.conf":
+      ensure	=> present,
+      content	=> template("redis/redis.conf.erb"),
+      notify	=> Service['redis-server'];
   }
 
   # Ensure Redis is running

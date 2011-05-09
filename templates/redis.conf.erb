@@ -89,14 +89,14 @@ dir /var/lib/redis/
 # so for example it is possible to configure the slave to save the DB with a
 # different interval, or to listen to another port, and so on.
 #
-# slaveof <masterip> <masterport>
+<% if master_ip then -%>slaveof <%= master_ip %> <%= master_port %><% end -%>
 
 # If the master is password protected (using the "requirepass" configuration
 # directive below) it is possible to tell the slave to authenticate before
 # starting the replication synchronization process, otherwise the master will
 # refuse the slave request.
 #
-# masterauth <master-password>
+<% if master_password then -%>masterauth <%= master_password %><% end %>
 
 ################################## SECURITY ###################################
 

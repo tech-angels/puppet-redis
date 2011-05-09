@@ -79,9 +79,4 @@ define redis_source(
          group => root,
          mode => 744,
     }
-    file { "/etc/redis.conf":
-        ensure => present,
-        content => template("redis/redis.conf.erb"),
-        replace => false;
-    }
 }
