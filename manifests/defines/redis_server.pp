@@ -53,6 +53,12 @@ define redis::server(
       notify	=> Service['redis-server'];
   }
 
+  # Logrotate
+  file {
+    '/etc/logrotate.d/redis':
+      source	=> 'puppet:///redis/logrotate';
+  }
+
   # Ensure Redis is running
   service {
     'redis-server':
