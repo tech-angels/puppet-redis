@@ -1,6 +1,6 @@
 # Managed by puppet
 
-/var/log/redis/*.log {
+/var/log/redis.log {
         daily
         dateext
         missingok
