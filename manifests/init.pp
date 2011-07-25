@@ -13,8 +13,20 @@ Sample usage:
 This class shouldn't be included directly. Use redis::server instead
 */
 class redis {
-    user { "redis":
-        uid	=> 800,
-        ensure => present;
-    }
+  user {
+    "redis":
+      uid	=> 800,
+      ensure => present;
+  }
+
+  # Module directory to store archives
+  include common::moduledir
+  module_dir { "redis": }
+
+  # Copy archives
+  file {
+    '/var/lib/puppet/modules/redis':
+      recurse	=> true,
+      source	=> 'puppet:///redis/archives';
+  }
 }
