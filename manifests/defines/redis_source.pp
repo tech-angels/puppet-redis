@@ -17,7 +17,7 @@ Parameters:
     Redis POSIX group.
 
 Actions:
- - Downloads and compiles Redis.
+ - downloads (if needed) and compiles Redis.
  - Install binaries in $bin directory.
 
 Sample usage:
@@ -41,12 +41,23 @@ define redis_source(
                  owner => root,
                  group => root
              }
+             # Use archive if present
+             exec {
+               redis_code_from_archive:
+                 command	=> "/bin/ln -s /var/lib/puppet/modules/redis/redis_${version}.tar.gz ${path}/redis_${version}/redis_${version}.tar.gz && tar --strip-components 1 -xzvf redis_${version}.tar.gz",
+                 cwd		=> "${path}/redis_${version}",
+                 onlyif		=> "/usr/bin/test -f /var/lib/puppet/modules/redis/redis_${version}.tar.gz",
+                 creates	=> "${path}/redis_${version}/redis.c",
+                 require	=> File["redis_folder"],
+                 before		=> Exec["make ${version}"]
+             }
              exec { redis_code: 
-                  command =>"wget --no-check-certificate http://github.com/antirez/redis/tarball/${version} -O redis_${version}.tar.gz && tar --strip-components 1 -xzvf redis_${version}.tar.gz",
-                  cwd => "${path}/redis_${version}",
-                  creates => "${path}/redis_${version}/redis.c",
-                  require => File["redis_folder"],
-                  before => Exec["make ${version}"]
+                  command	=>"wget --no-check-certificate http://github.com/antirez/redis/tarball/${version} -O redis_${version}.tar.gz && tar --strip-components 1 -xzvf redis_${version}.tar.gz",
+                  cwd		=> "${path}/redis_${version}",
+                  unless	=> "/usr/bin/test -f /var/lib/puppet/modules/redis/redis_${version}.tar.gz",
+                  creates	=> "${path}/redis_${version}/redis.c",
+                  require	=> File["redis_folder"],
+                  before	=> Exec["make ${version}"]
              }
              file { "${path}/redis_${version}/redis_${version}.tar.gz":
                   ensure => absent,
