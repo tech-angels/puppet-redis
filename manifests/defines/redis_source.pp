@@ -63,7 +63,7 @@ define redis_source(
         }
     }
     exec { "make ${version}":
-         command => "make && mv redis-server ${bin}/ && mv redis-cli ${bin}/ && mv redis-benchmark ${bin}/ && mv redis-check-dump ${bin}/",
+         command => "make && find . -executable -and -name 'redis-*' -exec mv {} ${bin}/ \;",
          cwd => "${path}/redis_${version}",
          creates => "${bin}/redis-server",
     }
