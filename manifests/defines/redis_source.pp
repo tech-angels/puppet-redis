@@ -47,7 +47,7 @@ define redis_source(
                  command	=> "/bin/ln -s /var/lib/puppet/modules/redis/redis_${version}.tar.gz ${path}/redis_${version}/redis_${version}.tar.gz && tar --strip-components 1 -xzvf redis_${version}.tar.gz",
                  cwd		=> "${path}/redis_${version}",
                  onlyif		=> "/usr/bin/test -f /var/lib/puppet/modules/redis/redis_${version}.tar.gz",
-                 creates	=> "${path}/redis_${version}/redis.c",
+                 creates	=> "${path}/redis_${version}/redis.conf",
                  require	=> File["redis_folder"],
                  before		=> Exec["make ${version}"]
              }
@@ -55,7 +55,7 @@ define redis_source(
                   command	=>"wget --no-check-certificate http://github.com/antirez/redis/tarball/${version} -O redis_${version}.tar.gz && tar --strip-components 1 -xzvf redis_${version}.tar.gz",
                   cwd		=> "${path}/redis_${version}",
                   unless	=> "/usr/bin/test -f /var/lib/puppet/modules/redis/redis_${version}.tar.gz",
-                  creates	=> "${path}/redis_${version}/redis.c",
+                  creates	=> "${path}/redis_${version}/redis.conf",
                   require	=> File["redis_folder"],
                   before	=> Exec["make ${version}"]
              }
