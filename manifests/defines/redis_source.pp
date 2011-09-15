@@ -59,11 +59,6 @@ define redis_source(
                   require	=> File["redis_folder"],
                   before	=> Exec["make ${version}"]
              }
-             file { "${path}/redis_${version}/redis_${version}.tar.gz":
-                  ensure => absent,
-                  require => Exec["redis_code"]
-             }
-
         }
         source: {
              exec { "git clone git://github.com/antirez/redis.git redis_${version}":
