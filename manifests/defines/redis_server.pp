@@ -10,6 +10,7 @@ Parameters:
 - bin: Path where to install Redis's executables. (optional)
 - owner: Redis POSIX account. (default: redis)
 - group: Redis POSIX group. (default: redis)
+- port: redis port, default: 6379
 - master_ip: master's IP, to make that server a slave. (optional)
 - master_port: master's port. (default 6379)
 - master_password: password to access master. (optional)
@@ -31,13 +32,14 @@ define redis::server(
   $bin = '/usr/local/bin',
   $owner = 'redis',
   $group = 'redis',
+  $port='6379',
   $master_ip=false,
   $master_port=6379,
   $master_password=false
 ) {
   include redis
   redis_source {
-    redis:
+    $name:
       version	=> $version,
       path	=> $path,
       bin	=> $bin,
@@ -47,23 +49,38 @@ define redis::server(
 
   # Redis configuration
   file { 
-    "/etc/redis.conf":
+    "/etc/redis-$version.conf":
       ensure	=> present,
       content	=> template("redis/redis.conf.erb"),
-      notify	=> Service['redis-server'];
+      notify	=> Service["redis-server-$version"];
   }
 
   # Logrotate
   file {
-    '/etc/logrotate.d/redis':
-      source	=> 'puppet:///redis/logrotate';
+    "/etc/logrotate.d/redis-$version":
+      content	=> template('redis/logrotate.erb'),
+  }
+
+  # DB folder
+  file { "/var/lib/redis-$version":
+    ensure => "directory",
+    owner => $owner,
+    group => $group,
+  }
+
+  # Install init.d file
+  file { "/etc/init.d/redis-server-$version":
+    content => template("redis/redis-server.erb"),
+    owner => root,
+    group => root,
+    mode => 744,
   }
 
   # Ensure Redis is running
   service {
-    'redis-server':
+    "redis-server-$version":
       enable	=> true,
       ensure	=> running,
-      pattern	=> '/usr/local/bin/redis-server';
+      pattern	=> "$bin/redis-server /etc/redis-$version.conf";
   }
 }

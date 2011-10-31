@@ -35,28 +35,27 @@ define redis_source(
 ) {
     case $version {
         default: {
-             file { redis_folder:
-                 path => "${path}/redis_${version}",
+             file { "${path}/redis_${version}":
                  ensure => "directory",
                  owner => root,
                  group => root
              }
              # Use archive if present
              exec {
-               redis_code_from_archive:
+               "redis_code_from_archive $version":
                  command	=> "/bin/ln -s /var/lib/puppet/modules/redis/redis_${version}.tar.gz ${path}/redis_${version}/redis_${version}.tar.gz && tar --strip-components 1 -xzvf redis_${version}.tar.gz",
                  cwd		=> "${path}/redis_${version}",
                  onlyif		=> "/usr/bin/test -f /var/lib/puppet/modules/redis/redis_${version}.tar.gz",
                  creates	=> "${path}/redis_${version}/redis.conf",
-                 require	=> File["redis_folder"],
+                 require	=> File["${path}/redis_${version}"],
                  before		=> Exec["make ${version}"]
              }
-             exec { redis_code: 
+             exec { "redis_code $version": 
                   command	=>"wget --no-check-certificate http://github.com/antirez/redis/tarball/${version} -O redis_${version}.tar.gz && tar --strip-components 1 -xzvf redis_${version}.tar.gz",
                   cwd		=> "${path}/redis_${version}",
                   unless	=> "/usr/bin/test -f /var/lib/puppet/modules/redis/redis_${version}.tar.gz",
                   creates	=> "${path}/redis_${version}/redis.conf",
-                  require	=> File["redis_folder"],
+                  require	=> File["${path}/redis_${version}"],
                   before	=> Exec["make ${version}"]
              }
         }
@@ -72,17 +71,5 @@ define redis_source(
          command => "make && find . -executable -and -name 'redis-*' -exec mv {} ${bin}/ \\;",
          cwd => "${path}/redis_${version}",
          creates => "${bin}/redis-server",
-    }
-    file { db_folder:
-        path => "/var/lib/redis",
-        ensure => "directory",
-        owner => $owner,
-        group => $group,
-    }
-    file { "/etc/init.d/redis-server":
-         content => template("redis/redis-server.erb"),
-         owner => root,
-         group => root,
-         mode => 744,
     }
 }
