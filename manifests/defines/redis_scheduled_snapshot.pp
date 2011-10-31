@@ -18,6 +18,8 @@ Plus these cron resourse parameters:
 */
 define redis::scheduled_snapshot(
 $user='redis',
+$bin,
+$port='6379',
 $hour=undef,
 $minute=undef,
 $month=undef,
@@ -27,7 +29,7 @@ $weekday=undef
   # Schedule saves
   cron {
     "Scheduled Redis snapshot: $name":
-      command	=> '/usr/local/bin/redis-cli SAVE',
+      command	=> "$bin/redis-cli -p $port SAVE",
       user	=> $user,
       hour	=> $hour,
       minute	=> $minute,

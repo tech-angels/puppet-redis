@@ -29,7 +29,7 @@ redis::server {
 define redis::server(
   $version,
   $path = '/usr/local/src',
-  $bin = '/usr/local/bin',
+  $bin = '',
   $owner = 'redis',
   $group = 'redis',
   $port='6379',
@@ -38,38 +38,44 @@ define redis::server(
   $master_password=false
 ) {
   include redis
+
+  # Remove slashes and spaces from name
+  $real_name = regsubst($name, '[ /]', '-')
+  # Use default bin dir if not specified
+  $real_bin = $bin ? { '' => "/usr/local/redis-$real_name", default => $bin }
+
   redis_source {
-    $name:
+    $real_name:
       version	=> $version,
       path	=> $path,
-      bin	=> $bin,
+      bin	=> $real_bin,
       owner	=> $owner,
       group	=> $group;
   }
 
   # Redis configuration
   file { 
-    "/etc/redis-$version.conf":
+    "/etc/redis-$real_name.conf":
       ensure	=> present,
       content	=> template("redis/redis.conf.erb"),
-      notify	=> Service["redis-server-$version"];
+      notify	=> Service["redis-server-$real_name"];
   }
 
   # Logrotate
   file {
-    "/etc/logrotate.d/redis-$version":
+    "/etc/logrotate.d/redis-$real_name":
       content	=> template('redis/logrotate.erb'),
   }
 
   # DB folder
-  file { "/var/lib/redis-$version":
+  file { "/var/lib/redis-$real_name":
     ensure => "directory",
     owner => $owner,
     group => $group,
   }
 
   # Install init.d file
-  file { "/etc/init.d/redis-server-$version":
+  file { "/etc/init.d/redis-server-$real_name":
     content => template("redis/redis-server.erb"),
     owner => root,
     group => root,
@@ -78,9 +84,9 @@ define redis::server(
 
   # Ensure Redis is running
   service {
-    "redis-server-$version":
+    "redis-server-$real_name":
       enable	=> true,
       ensure	=> running,
-      pattern	=> "$bin/redis-server /etc/redis-$version.conf";
+      pattern	=> "$real_bin/redis-server /etc/redis-$real_name.conf";
   }
 }
