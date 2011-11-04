@@ -49,7 +49,7 @@ define redis_source(
              # Use archive if present
              exec {
                "redis_code_from_archive $name":
-                 command	=> "/bin/ln -s /var/lib/puppet/modules/redis/redis_${version}.tar.gz ${path}/redis_${version}/redis_${version}.tar.gz && tar --strip-components 1 -xzvf redis_${version}.tar.gz",
+                 command	=> "/bin/ln -s /var/lib/puppet/modules/redis/redis_${version}.tar.gz ${path}/redis_${name}/redis_${version}.tar.gz && tar --strip-components 1 -xzvf redis_${version}.tar.gz",
                  cwd		=> "${path}/redis_${name}",
                  onlyif		=> "/usr/bin/test -f /var/lib/puppet/modules/redis/redis_${version}.tar.gz",
                  creates	=> "${path}/redis_${name}/redis.conf",
