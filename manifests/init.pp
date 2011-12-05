@@ -16,7 +16,14 @@ class redis {
   user {
     "redis":
       uid	=> 800,
-      ensure => present;
+      gid	=> 800,
+      ensure => present,
+  }
+
+  group {
+    "redis":
+      gid       => 800,
+      ensure => present,
   }
 
   # Module directory to store archives
