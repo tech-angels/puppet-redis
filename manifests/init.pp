@@ -34,6 +34,6 @@ class redis {
   file {
     '/var/lib/puppet/modules/redis':
       recurse	=> true,
-      source	=> 'puppet:///redis/archives';
+      source	=> 'puppet:///modules/redis/archives';
   }
 }
