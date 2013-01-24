@@ -195,8 +195,10 @@ appendfsync everysec
 # To enable VM just set 'vm-enabled' to yes, and set the following three
 # VM parameters accordingly to your needs.
 
+<% if version.to_f <= 2.4 then %>
 vm-enabled no
 # vm-enabled yes
+<% end %>
 
 # This is the path of the Redis swap file. As you can guess, swap files
 # can't be shared by different Redis instances, so make sure to use a swap

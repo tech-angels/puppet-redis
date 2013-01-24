@@ -54,10 +54,12 @@ define redis::server(
   }
 
   # Redis configuration
+  $minorversion = regsubst($version, '^(\d+\.\d+).*', '\1')
+
   file { 
     "/etc/redis-$real_name.conf":
       ensure	=> present,
-      content	=> template("redis/redis.conf.erb"),
+      content	=> template("redis/redis.conf.${minorversion}.erb"),
       notify	=> Service["redis-server-$real_name"];
   }
 
