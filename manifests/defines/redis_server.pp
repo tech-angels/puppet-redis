@@ -28,14 +28,15 @@ redis::server {
 */
 define redis::server(
   $version,
-  $path = '/usr/local/src',
-  $bin = '',
-  $owner = 'redis',
-  $group = 'redis',
-  $port='6379',
-  $master_ip=false,
-  $master_port=6379,
-  $master_password=false
+  $path            = '/usr/local/src',
+  $bin             = '',
+  $owner           = 'redis',
+  $group           = 'redis',
+  $port            = '6379',
+  $master_ip       = false,
+  $master_port     = 6379,
+  $master_password = false,
+  $save            = true
 ) {
   include redis
 
