@@ -47,7 +47,7 @@ $max_archive_age='7'
       user    => $user,
     }
 
-    $backup_command = "sh -c '[ -f ${db_dir}/dump.rdb ] && mv ${db_dir}/dump.rdb ${archive_dir}/`date +%Y-%m-%d-%H-%M`.rdb ; ${bin}/redis-cli -p ${port} BGSAVE'"
+    $backup_command = "sh -c \"[ -f ${db_dir}/dump.rdb ] && mv ${db_dir}/dump.rdb ${archive_dir}/\${NOW}.rdb ; ${bin}/redis-cli -p ${port} BGSAVE\""
   } else {
     $backup_command = "${bin}/redis-cli -p ${port} BGSAVE"
   }
@@ -61,6 +61,7 @@ $max_archive_age='7'
   # Schedule saves
   cron {
     "Scheduled Redis snapshot: $name":
+      environment => 'NOW=$(date +%Y-%m-%d-%H-%M)',
       command	=> $backup_command,
       user	=> $user,
       hour	=> $hour,
