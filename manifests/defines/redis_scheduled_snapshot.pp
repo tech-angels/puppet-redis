@@ -43,7 +43,7 @@ $max_archive_age='7'
 
     # Clean it up of old files
     cron { "clean up ${name} Redis snapshots":
-      command => "find ${archive_dir} -mtime +${max_archive_age} -exec rm -f {} \;",
+      command => "find ${archive_dir} -mtime +${max_archive_age} -exec rm -f {} \\;",
       user    => $user,
       hour    => 0,
       minute  => 0,
