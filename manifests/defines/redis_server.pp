@@ -69,6 +69,12 @@ define redis::server(
     "/etc/logrotate.d/redis-$real_name":
       content	=> template('redis/logrotate.erb'),
   }
+  # Log file permissions
+  file { "/var/log/redis-${real_name}.log":
+    owner => $owner,
+    group => 'adm',
+    mode  => '0640',
+  }
 
   # DB folder
   file { "/var/lib/redis-$real_name":
