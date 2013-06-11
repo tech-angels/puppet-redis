@@ -31,7 +31,7 @@ case "$1" in
   start)
     echo -n "Starting $DESC: "
     touch $PIDFILE $LOGFILE
-    chown <%= owner %>:<%= group %> $PIDFILE $LOGFILE
+    chown <%= owner %>:adm $PIDFILE $LOGFILE
     if start-stop-daemon --start --quiet --umask 007 --pidfile $PIDFILE --chuid <%= owner %>:<%= group %> --exec $DAEMON -- $DAEMON_ARGS
     then
         echo "$NAME."
