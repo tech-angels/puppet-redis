@@ -15,6 +15,7 @@
 PATH=<%= real_bin %>:/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 DAEMON=<%= real_bin%>/redis-server
 REDIS_CLI=<%= real_bin%>/redis-cli
+REDIS_PORT=<%= port %>
 CONFIG_FILE=/etc/redis-<%= real_name %>.conf
 DAEMON_ARGS="$CONFIG_FILE"
 NAME=redis-server
@@ -49,6 +50,10 @@ case "$1" in
       $REDIS_CLI -p $LISTENING_PORT SHUTDOWN
       #rm -f $PIDFILE
     fi
+    ;;
+
+  status)
+    ($REDIS_CLI -p "$REDIS_PORT" quit >/dev/null 2>&1 && echo Redis running) || echo Redis stopped
     ;;
 
   restart|force-reload)
