@@ -53,7 +53,13 @@ case "$1" in
     ;;
 
   status)
-    ($REDIS_CLI -p "$REDIS_PORT" quit >/dev/null 2>&1 && echo Redis running) || echo Redis stopped
+    if $REDIS_CLI -p "$REDIS_PORT" quit >/dev/null 2>&1
+    then
+      echo Redis running
+    else
+      echo Redis stopped
+      exit 1
+    fi
     ;;
 
   restart|force-reload)
