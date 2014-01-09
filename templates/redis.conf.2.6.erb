@@ -18,11 +18,11 @@ daemonize yes
 
 # When running daemonized, Redis writes a pid file in /var/run/redis.pid by
 # default. You can specify a custom pid file location here.
-pidfile /var/run/redis-<%= real_name %>.pid
+pidfile /var/run/redis-<%= @real_name %>.pid
 
 # Accept connections on the specified port, default is 6379.
 # If port 0 is specified Redis will not listen on a TCP socket.
-port <%= port %>
+port <%= @port %>
 
 # If you want you can bind a single interface, if the bind option is not
 # specified all the interfaces will listen for incoming connections.
@@ -50,7 +50,7 @@ loglevel notice
 # Specify the log file name. Also 'stdout' can be used to force
 # Redis to log on the standard output. Note that if you use standard
 # output for logging but daemonize, logs will be sent to /dev/null
-logfile /var/log/redis-<%= real_name %>.log
+logfile /var/log/redis-<%= @real_name %>.log
 
 # To enable logging to the system logger, just set 'syslog-enabled' to yes,
 # and optionally update the other syslog parameters to suit your needs.
@@ -90,7 +90,7 @@ databases 16
 #   save ""
 
 
-<% if save then %>
+<% if @save then %>
 save 900 1
 save 300 10
 save 60 10000
@@ -137,7 +137,7 @@ dbfilename dump.rdb
 # Also the Append Only File will be created inside this directory.
 # 
 # Note that you must specify a directory here, not a file name.
-dir /var/lib/redis-<%= real_name %>/
+dir /var/lib/redis-<%= @real_name %>/
 
 ################################# REPLICATION #################################
 
@@ -146,14 +146,14 @@ dir /var/lib/redis-<%= real_name %>/
 # so for example it is possible to configure the slave to save the DB with a
 # different interval, or to listen to another port, and so on.
 #
-<% if master_ip then -%>slaveof <%= master_ip %> <%= master_port %><% end -%>
+<% if @master_ip then -%>slaveof <%= @master_ip %> <%= @master_port %><% end -%>
 
 # If the master is password protected (using the "requirepass" configuration
 # directive below) it is possible to tell the slave to authenticate before
 # starting the replication synchronization process, otherwise the master will
 # refuse the slave request.
 #
-<% if master_password then -%>masterauth <%= master_password %><% end %>
+<% if @master_password then -%>masterauth <%= @master_password %><% end %>
 
 # When a slave lost the connection with the master, or when the replication
 # is still in progress, the slave can act in two different ways:

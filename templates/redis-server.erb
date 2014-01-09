@@ -1,6 +1,6 @@
 #! /bin/sh
 ### BEGIN INIT INFO
-# Provides:     redis-server-<%= real_name %>
+# Provides:     redis-server-<%= @real_name %>
 # Required-Start:   $syslog
 # Required-Stop:    $syslog
 # Should-Start:     $local_fs
@@ -12,16 +12,16 @@
 ### END INIT INFO
 
 
-PATH=<%= real_bin %>:/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
-DAEMON=<%= real_bin%>/redis-server
-REDIS_CLI=<%= real_bin%>/redis-cli
-REDIS_PORT=<%= port %>
-CONFIG_FILE=/etc/redis-<%= real_name %>.conf
+PATH=<%= @real_bin %>:/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+DAEMON=<%= @real_bin%>/redis-server
+REDIS_CLI=<%= @real_bin%>/redis-cli
+REDIS_PORT=<%= @port %>
+CONFIG_FILE=/etc/redis-<%= @real_name %>.conf
 DAEMON_ARGS="$CONFIG_FILE"
 NAME=redis-server
 DESC=redis-server
-PIDFILE=/var/run/redis-<%= real_name %>.pid
-LOGFILE=/var/log/redis-<%= real_name %>.log
+PIDFILE=/var/run/redis-<%= @real_name %>.pid
+LOGFILE=/var/log/redis-<%= @real_name %>.log
 
 test -x $DAEMON || exit 0
 test -x $DAEMONBOOTSTRAP || exit 0
@@ -32,8 +32,8 @@ case "$1" in
   start)
     echo -n "Starting $DESC: "
     touch $PIDFILE $LOGFILE
-    chown <%= owner %>:adm $PIDFILE $LOGFILE
-    if start-stop-daemon --start --quiet --umask 007 --pidfile $PIDFILE --chuid <%= owner %>:<%= group %> --exec $DAEMON -- $DAEMON_ARGS
+    chown <%= @owner %>:adm $PIDFILE $LOGFILE
+    if start-stop-daemon --start --quiet --umask 007 --pidfile $PIDFILE --chuid <%= @owner %>:<%= @group %> --exec $DAEMON -- $DAEMON_ARGS
     then
         echo "$NAME."
     else
