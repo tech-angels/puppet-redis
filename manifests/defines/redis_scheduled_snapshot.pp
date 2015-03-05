@@ -16,10 +16,7 @@ Plus these cron resourse parameters:
 - weekday 
 
 */
-define redis::scheduled_snapshot(
-$user='redis',
-$db_dir,
-$bin,
+class redis::scheduled_snapshot(
 $port='6379',
 $hour=undef,
 $minute=undef,
@@ -42,16 +39,16 @@ $max_archive_age='7'
     }
 
     # Clean it up of old files
-    cron { "clean up ${name} Redis snapshots":
+    cron { "clean up Redis snapshots":
       command => "find ${archive_dir} -mtime +${max_archive_age} -exec rm -f {} \\;",
       user    => $user,
       hour    => 0,
       minute  => 0,
     }
 
-    $backup_command = "sh -c \"[ -f ${db_dir}/dump.rdb ] && mv ${db_dir}/dump.rdb ${archive_dir}/\${NOW}.rdb ; ${bin}/redis-cli -p ${port} BGSAVE\""
+    $backup_command = "sh -c \"[ -f ${db_dir}/dump.rdb ] && mv ${db_dir}/dump.rdb ${archive_dir}/\${NOW}.rdb ; /usr/bin/redis-cli -p ${port} BGSAVE\""
   } else {
-    $backup_command = "${bin}/redis-cli -p ${port} BGSAVE"
+    $backup_command = "/usr/bin/redis-cli -p ${port} BGSAVE"
   }
   
 
@@ -62,10 +59,10 @@ $max_archive_age='7'
 
   # Schedule saves
   cron {
-    "Scheduled Redis snapshot: $name":
+    "Scheduled Redis snapshot:":
       environment => 'NOW=$(date +%Y-%m-%d-%H-%M)',
       command	=> $backup_command,
-      user	=> $user,
+      user	=> 'redis',
       hour	=> $hour,
       minute	=> $minute,
       month	=> $month,

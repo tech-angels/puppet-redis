@@ -25,15 +25,4 @@ class redis {
       gid       => 800,
       ensure => present,
   }
-
-  # Module directory to store archives
-  include common::moduledir
-  module_dir { "redis": }
-
-  # Copy archives
-  file {
-    '/var/lib/puppet/modules/redis':
-      recurse	=> true,
-      source	=> 'puppet:///modules/redis/archives';
-  }
 }
