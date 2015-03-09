@@ -13,7 +13,7 @@ Plus these cron resourse parameters:
 - minute
 - month
 - monthday
-- weekday 
+- weekday
 
 */
 class redis::scheduled_snapshot(
@@ -40,7 +40,7 @@ $max_archive_age='7'
 
     # Clean it up of old files
     cron { "clean up Redis snapshots":
-      command => "find ${archive_dir} -mtime +${max_archive_age} -exec rm -f {} \\;",
+      command => "find ${archive_dir} -mtime +${max_archive_age} -type f -exec rm -f {} \\;",
       user    => $user,
       hour    => 0,
       minute  => 0,
@@ -50,11 +50,11 @@ $max_archive_age='7'
   } else {
     $backup_command = "/usr/bin/redis-cli -p ${port} BGSAVE"
   }
-  
+
 
   # Compute command
-  
-  
+
+
 
 
   # Schedule saves
